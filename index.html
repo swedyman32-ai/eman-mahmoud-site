@@ -42,6 +42,10 @@
     .row{display:grid;gap:10px}
     @media(min-width:640px){.row{grid-template-columns:1fr 1fr}}
     .chip{display:inline-flex;gap:6px;align-items:center;background:#120c13;border:1px solid #2c2430;border-radius:999px;padding:6px 10px}
+    /* زر العد التنازلي */
+    .btn-romantic{
+      display:inline-block;background:#ff6ba6;color:#14060c;padding:10px 14px;border-radius:12px;font-weight:700;text-decoration:none
+    }
   </style>
 </head>
 <body>
@@ -54,9 +58,7 @@
         <button class="tab" data-page="memories">ذكرياتنا</button>
         <button class="tab" data-page="play">لعبة لطيفة</button>
         <button class="tab" data-page="message">الرسالة</button>
-        <a href="countdown.html" class="btn-romantic">
-  🎂 العدّ التنازلي لعيد ميلادك يا إيمان 💖
-</a>
+        <a href="countdown.html" class="btn-romantic">🎂 العدّ التنازلي لعيد ميلادك يا إيمان 💖</a>
       </div>
     </nav>
 
@@ -86,14 +88,16 @@
 
           <div class="note type" id="typeArea"></div>
 
+          <!-- شريط موسيقى نظيف (تشغيل/إيقاف) -->
           <div class="audioBar">
             <button class="btn" id="playMusic">تشغيل الموسيقى 🎶</button>
             <button class="btn outline" id="pauseMusic">إيقاف</button>
             <span class="chip">موسيقى رومانسية خفيفة</span>
           </div>
-          <audio id="bgAudio" preload="auto">
-            <!-- موسيقى هادئة (عامة) من مصدر مجاني؛ يمكن استبدال الرابط لاحقًا -->
-            <source src="https://cdn.pixabay.com/download/audio/2021/11/16/audio_1f9f3a6e58.mp3?filename=in-love-124482.mp3" type="audio/mpeg">
+          <audio id="bgAudio" preload="auto" playsinline loop>
+            <!-- عدّل المسار حسب مكان الملف: لو في مجلد music خليه كده -->
+            <source src="music/our_song.mp3" type="audio/mpeg">
+            متصفحك لا يدعم تشغيل الصوت 🎵
           </audio>
         </div>
       </div>
@@ -103,13 +107,10 @@
         <div class="card">
           <h2 class="title">ذكرياتنا الحلوة</h2>
           <div class="gallery" id="gallery">
-            <!-- ✨ استبدل الروابط هنا بصوركم (يفضل روابط https مباشرة)
-                 أمثلة لمصادر: صور Google Drive (عام)، Imgur، أو ملفاتك على Netlify/GitHub
-                 تقدر برضه تستخدم صور محلية: ضعها بجوار index.html واكتب src مثل: ./photo1.jpg -->
             <img src="images/1000036687.jpg" alt="أنا وإيمان 💕">
-<img src="images/1000036697.jpg" alt="ذكريات جميلة ❤️">
-<img src="images/1000036700.jpg" alt="أجمل يوم مع إيمان 🌸">
-<img src="images/1000036703 (1).jpg" alt="ضحكة بتغيّر اليوم 😍">
+            <img src="images/1000036697.jpg" alt="ذكريات جميلة ❤️">
+            <img src="images/1000036700.jpg" alt="أجمل يوم مع إيمان 🌸">
+            <img src="images/1000036703 (1).jpg" alt="ضحكة بتغيّر اليوم 😍">
           </div>
         </div>
       </div>
@@ -158,15 +159,15 @@
     document.getElementById('saveNames').addEventListener('click', () => {
       const h = (herNameInput.value || '').trim();
       const y = (yourNameInput.value || '').trim();
-      if(h) herName = h; else herName = 'إيمان';
-      if(y) yourName = y; else yourName = 'محمود';
+      herName = h || 'إيمان';
+      yourName = y || 'محمود';
       herNameTitle.textContent = herName;
       yourNameChip.textContent = yourName;
       herNameChip.textContent = herName;
       footerNames.textContent = `${yourName} ❤ ${herName}`;
     });
 
-    // تبديل الصفحات (تبويب بسيط)
+    // تبديل الصفحات
     const tabs = document.querySelectorAll('.tab');
     const pages = document.querySelectorAll('.page');
     tabs.forEach(t => t.addEventListener('click', () => {
@@ -184,20 +185,17 @@
       let i=0; const timer=setInterval(()=>{typeArea.textContent += txt[i]||''; i++; if(i>txt.length) clearInterval(timer);}, 28);
     });
 
-    // موسيقى
+    // موسيقى (تشغيل/إيقاف) — تنفيذ واحد فقط
     const audio = document.getElementById('bgAudio');
-    document.getElementById('playMusic').addEventListener('click',()=>audio.play());
-    document.getElementById('pauseMusic').addEventListener('click',()=>audio.pause());
+    const playBtn = document.getElementById('playMusic');
+    const pauseBtn = document.getElementById('pauseMusic');
+    audio.volume = 1.0;
 
-    // خيار يوتيوب بدل الصوت (اختياري): ضع VIDEO_ID
-    // 1) استبدل VIDEO_ID بهوية الفيديو
-    // 2) التشغيل لازم يكون بعد ضغطة مستخدم (سياسة المتصفح)
-    // const ytHost = document.createElement('div');
-    // document.body.appendChild(ytHost);
-    // function playYT(){
-    //   ytHost.innerHTML = `<iframe width="0" height="0" style="position:absolute;left:-9999px;" src="https://www.youtube.com/embed/VIDEO_ID?autoplay=1&loop=1&playlist=VIDEO_ID&controls=0&modestbranding=1&rel=0" title="YouTube audio" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-    // }
-    // document.getElementById('playMusic').addEventListener('click', playYT);
+    playBtn.addEventListener('click', async () => {
+      try { await audio.play(); }
+      catch(e){ alert('مش قادر يشغّل الصوت. اتأكد من مسار الملف: music/our_song.mp3'); }
+    });
+    pauseBtn.addEventListener('click', () => audio.pause());
 
     // لعبة لطيفة: زر "لا" يزوغ
     const yesBtn = document.getElementById('yesBtn');
@@ -210,11 +208,9 @@
       const y = Math.random() * (area.height - noBtn.offsetHeight);
       noBtn.style.transform = `translate(${x}px, ${y}px)`;
     });
-    yesBtn.addEventListener('click', ()=>{
-      playOut.textContent = `تمام يا ${herName}، الجواب معروف من غير ما تسألي 💘`;
-    });
+    yesBtn.addEventListener('click', ()=>{ playOut.textContent = `تمام يا ${herName}، الجواب معروف من غير ما تسألي 💘`; });
 
-    // رسالة نهائية قابلة للنسخ/المشاركة
+    // رسالة نهائية
     const finalMsg = document.getElementById('finalMsg');
     function renderFinal(){
       finalMsg.textContent = `${herName} العزيزة،\n\nأعرف إن الأيام اللي فاتت كانت تقيلة، ويمكن الكلام اتلخبط مننا،\nبس أنا حابب أبدأ من جديد، خطوة بخطوة، بإيد في إيد.\nلو في قلبك مساحة لفرصة تانية، أنا مستعد أصنعها أحلى فرصة.\n\nمخلص دائمًا،\n${yourName}`;
@@ -223,16 +219,16 @@
 
     // نسخ ومشاركة
     document.getElementById('copyBtn').addEventListener('click', async()=>{
-      try{await navigator.clipboard.writeText(finalMsg.textContent); alert('تم نسخ الرسالة 💌');}catch{alert('متصفحك مانع النسخ تلقائيًا – انسخها يدويًا لو سمحت.');}
+      try{await navigator.clipboard.writeText(finalMsg.textContent); alert('تم نسخ الرسالة 💌');}
+      catch{alert('المتصفح مانع النسخ تلقائيًا – انسخها يدويًا لو سمحت.');}
     });
     document.getElementById('shareBtn').addEventListener('click', async()=>{
       const text = finalMsg.textContent;
-      if(navigator.share){
-        try{await navigator.share({text});}catch(e){/* تجاهل الإلغاء */}
-      }else{alert('المشاركة غير مدعومة هنا – تقدر تنسخ الرسالة وتبعتها يدويًا 💌');}
+      if(navigator.share){ try{await navigator.share({text});}catch(e){} }
+      else{ alert('المشاركة غير مدعومة — انسخ الرسالة وابعتها 💌'); }
     });
 
-    // قلوب متطايرة في الخلفية (تم إصلاح التكرار)
+    // قلوب متطايرة
     const hearts = document.getElementById('hearts');
     function spawnHeart(){
       const d = document.createElement('div');
@@ -249,69 +245,15 @@
     }
     setInterval(spawnHeart, 600);
 
-    // ——— اختبارات بسيطة (تظهر في الكونسول) ———
+    // فحوصات بسيطة
     console.groupCollapsed('Self-tests');
     try {
       console.assert(typeof herName === 'string', 'herName should be string');
       console.assert(document.getElementById('hearts') === hearts, 'hearts reference OK');
       console.assert(typeof spawnHeart === 'function', 'spawnHeart is defined');
-      console.log('✅ Basic checks passed');
+      console.log('✅ Music wired once, IDs unique, ready.');
     } catch (e) { console.warn('Self-test issue:', e); }
     console.groupEnd();
- <!-- ====== تشغيل موسيقى رومانسية ====== -->
-<audio id="bg-music" preload="auto" loop>
-  <!-- لو الأغنية في نفس المجلد -->
-  <source src="our_song.mp3" type="audio/mpeg">
-  <!-- لو في مجلد اسمه music اكتب -->
-  <!-- <source src="music/our_song.mp3" type="audio/mpeg"> -->
-  متصفحك لا يدعم تشغيل الصوت 🎵
-</audio>
-
-<!-- زر بسيط لتشغيل الموسيقى -->
-<button id="playMusic" style="
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: linear-gradient(45deg, #ff6ba6, #ff91b7);
-  border: none;
-  border-radius: 50%;
-  width: 70px;
-  height: 70px;
-  font-size: 26px;
-  color: #fff;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  transition: 0.3s;
-">🎵</button>
-
-<script>
-  const audio = document.getElementById('bg-music');
-  const btn = document.getElementById('playMusic');
-
-  // تأكد إن الصوت شغال بنسبة 100%
-  audio.volume = 1.0;
-
-  btn.addEventListener('click', async () => {
-    try {
-      if (audio.paused) {
-        await audio.play();
-        btn.textContent = '⏸️'; // يغيّر شكل الزر بعد التشغيل
-        btn.style.background = 'linear-gradient(45deg, #ff91b7, #ffb6c8)';
-      } else {
-        audio.pause();
-        btn.textContent = '🎵';
-        btn.style.background = 'linear-gradient(45deg, #ff6ba6, #ff91b7)';
-      }
-    } catch (err) {
-      alert('في مشكلة في تشغيل الموسيقى. اتأكد إن اسم الملف والمسار صح.\n\n' + err.message);
-    }
-  });
-
-  // لو في مشكلة تحميل ملف الصوت (المسار غلط)
-  audio.addEventListener('error', () => {
-    alert('⚠️ ملف الموسيقى مش موجود أو الصيغة غير مدعومة.\nاتأكد إن اسم الملف صح والمسار مظبوط.');
-  });
-</script>
-<!-- ====== نهاية كود الموسيقى ====== -->
+  </script>
 </body>
 </html>
