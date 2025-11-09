@@ -258,30 +258,61 @@
       console.log('✅ Basic checks passed');
     } catch (e) { console.warn('Self-test issue:', e); }
     console.groupEnd();
-  </script>
-  <button id="playMusic" style="
+ <!-- ====== تشغيل موسيقى رومانسية ====== -->
+<audio id="bg-music" preload="auto" loop>
+  <!-- لو الأغنية في نفس المجلد -->
+  <source src="our_song.mp3" type="audio/mpeg">
+  <!-- لو في مجلد اسمه music اكتب -->
+  <!-- <source src="music/our_song.mp3" type="audio/mpeg"> -->
+  متصفحك لا يدعم تشغيل الصوت 🎵
+</audio>
+
+<!-- زر بسيط لتشغيل الموسيقى -->
+<button id="playMusic" style="
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: #ff6ba6;
-  color: #fff;
+  background: linear-gradient(45deg, #ff6ba6, #ff91b7);
   border: none;
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  font-size: 24px;
+  width: 70px;
+  height: 70px;
+  font-size: 26px;
+  color: #fff;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  transition: 0.3s;
 ">🎵</button>
 
 <script>
   const audio = document.getElementById('bg-music');
   const btn = document.getElementById('playMusic');
 
-  btn.addEventListener('click', () => {
-    audio.play();
-    btn.style.display = 'none'; // يخفي الزر بعد التشغيل
+  // تأكد إن الصوت شغال بنسبة 100%
+  audio.volume = 1.0;
+
+  btn.addEventListener('click', async () => {
+    try {
+      if (audio.paused) {
+        await audio.play();
+        btn.textContent = '⏸️'; // يغيّر شكل الزر بعد التشغيل
+        btn.style.background = 'linear-gradient(45deg, #ff91b7, #ffb6c8)';
+      } else {
+        audio.pause();
+        btn.textContent = '🎵';
+        btn.style.background = 'linear-gradient(45deg, #ff6ba6, #ff91b7)';
+      }
+    } catch (err) {
+      alert('في مشكلة في تشغيل الموسيقى. اتأكد إن اسم الملف والمسار صح.\n\n' + err.message);
+    }
+  });
+
+  // لو في مشكلة تحميل ملف الصوت (المسار غلط)
+  audio.addEventListener('error', () => {
+    alert('⚠️ ملف الموسيقى مش موجود أو الصيغة غير مدعومة.\nاتأكد إن اسم الملف صح والمسار مظبوط.');
   });
 </script>
+<!-- ====== نهاية كود الموسيقى ====== -->
+
 </body>
 </html>
