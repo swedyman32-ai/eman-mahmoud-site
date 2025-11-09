@@ -259,5 +259,29 @@
     } catch (e) { console.warn('Self-test issue:', e); }
     console.groupEnd();
   </script>
+  <button id="playMusic" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ff6ba6;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+">🎵</button>
+
+<script>
+  const audio = document.getElementById('bg-music');
+  const btn = document.getElementById('playMusic');
+
+  btn.addEventListener('click', () => {
+    audio.play();
+    btn.style.display = 'none'; // يخفي الزر بعد التشغيل
+  });
+</script>
 </body>
 </html>
