@@ -67,13 +67,13 @@
       <div class="page active" id="home">
         <div class="card">
           <h2 class="title">يا <span id="herNameTitle">حبيبتي</span>، دقيقة واحدة بس…</h2>
-          <p class="muted">عملتلك الصفحة دي من قلبي. كل زر فيها معمول علشان يرسم ضحكة بجد 💖</p>
+          <p class="muted"> سهرت ليالي علشان اعملك الموقع دا من يوم ماتصورنا سوا في الفرح 💖</p>
 
           <div class="grid">
             <div>
-              <label class="muted">اسمك (تقدري تغيّريه):</label>
-              <input id="herNameInput" class="inp" placeholder="اكتبي اسمك هنا" />
-              <div class="note">لو سيبتيه فاضي، هانناديكي: <b>إيمان</b> 💞</div>
+              <label class="muted">اسمك (أنا بحبه منون 🥰😘🥰 ):</label>
+              <input id="herNameInput" class="inp" placeholder=" بت قولتلك بحبه منون ها " />
+              <div class="note"> 🤣🤣كدا كدا انا الي برمجت الموقع وهخليه تلقائي يكتب الرسالة بإسم منون لو مكتبتيش اسم تاني : <b>إيمان</b> 💞</div>
             </div>
             <div>
               <label class="muted">اسمي عندِك يظهر إزاي؟</label>
@@ -146,7 +146,7 @@
 
   <script>
     // إعداد أسماء افتراضية
-    let herName = 'إيمان';
+    let herName = 'منون';
     let yourName = 'محمود';
 
     const herNameInput = document.getElementById('herNameInput');
@@ -159,7 +159,7 @@
     document.getElementById('saveNames').addEventListener('click', () => {
       const h = (herNameInput.value || '').trim();
       const y = (yourNameInput.value || '').trim();
-      herName = h || 'إيمان';
+      herName = h || 'منون';
       yourName = y || 'محمود';
       herNameTitle.textContent = herName;
       yourNameChip.textContent = yourName;
