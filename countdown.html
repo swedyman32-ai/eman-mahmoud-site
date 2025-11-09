@@ -6,9 +6,10 @@
   <title>العدّ التنازلي لعيد ميلاد إيمان 🎂</title>
   <style>
     :root{--bg:#0b0f16;--fg:#fff;--accent:#ff6ba6}
-    *{box-sizing:border-box} body{margin:0;font-family:system-ui,Segoe UI,Roboto;
-    background:radial-gradient(1200px 600px at 50% 20%, #121826 0%, #0b0f16 60%, #070b11 100%);
-    color:var(--fg);min-height:100dvh;display:flex;align-items:center;justify-content:center}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,Segoe UI,Roboto,Tahoma,Arial;
+      background:radial-gradient(1200px 600px at 50% 20%, #121826 0%, #0b0f16 60%, #070b11 100%);
+      color:var(--fg);min-height:100dvh;display:flex;align-items:center;justify-content:center}
     .wrap{max-width:900px;width:100%;padding:24px}
     .card{background:rgba(255,255,255,.06);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.08);
       border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:28px}
@@ -18,9 +19,6 @@
     .unit{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:16px 12px;text-align:center}
     .num{font-size:clamp(28px,6vw,48px);font-weight:700}
     .lab{font-size:12px;opacity:.85;margin-top:4px}
-    .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
-    .btn{border:0;border-radius:14px;padding:12px 16px;font-weight:700;cursor:pointer}
-    .btn-primary{background:var(--accent);color:#14060c}
     @media (max-width:520px){.count{grid-template-columns:repeat(2,1fr)}}
   </style>
 </head>
@@ -36,34 +34,47 @@
         <div class="unit"><div class="num" id="m">—</div><div class="lab">دقايق</div></div>
         <div class="unit"><div class="num" id="s">—</div><div class="lab">ثواني</div></div>
       </div>
-
-      <div class="row">
-        <button class="btn btn-primary" id="share">شارك الصفحة</button>
-      </div>
-
-      <footer style="margin-top:12px;opacity:.7;font-size:12px">
-        تقدر تغيّر التاريخ من اللينك: ?date=YYYY-MM-DD — الافتراضي: 17 يونيو
-      </footer>
     </section>
   </main>
 
   <script>
-    // === ثابت: 17 يونيو ===
-    const DEFAULT_MM_DD = "06-17";
-
-    // اضمن تشغيل الكود بعد تحميل عناصر الصفحة
-    document.addEventListener("DOMContentLoaded", () => {
-      const getEl = id => document.getElementById(id);
-
-      // حدِّد الهدف
-      const params = new URLSearchParams(location.search);
-      let target = null;
-      if (params.get("date")) {
-        const d = new Date(params.get("date") + "T00:00:00");
-        if (!isNaN(d)) target = d;
-      }
-      if (!target) {
-        const [mm, dd] = DEFAULT_MM_DD.split("-").map(Number);
+    // يعدّ تلقائيًا لأقرب 17 يونيو (بالتوقيت المحلي)
+    (function () {
+      const TARGET_MM = 6, TARGET_DD = 17; // يونيو = 6
+      function nextTarget() {
         const now = new Date();
-        const y = now.getFullYear();
-        const cand = new Date(y, mm - 1, dd, 0, 0, 0);
+        let y = now.getFullYear();
+        let t = new Date(y, TARGET_MM - 1, TARGET_DD, 0, 0, 0, 0);
+        if (t <= now) t = new Date(y + 1, TARGET_MM - 1, TARGET_DD, 0, 0, 0, 0);
+        return t;
+      }
+
+      const dEl = document.getElementById("d");
+      const hEl = document.getElementById("h");
+      const mEl = document.getElementById("m");
+      const sEl = document.getElementById("s");
+      let target = nextTarget();
+
+      function update() {
+        const now = new Date();
+        let diff = target - now;
+        if (diff <= 0) { target = nextTarget(); diff = target - now; } // يلف للسنة الجاية تلقائي
+
+        const totalSec = Math.floor(diff / 1000);
+        const days  = Math.floor(totalSec / 86400);
+        const hours = Math.floor((totalSec % 86400) / 3600);
+        const mins  = Math.floor((totalSec % 3600) / 60);
+        const secs  = totalSec % 60;
+
+        dEl.textContent = days;
+        hEl.textContent = String(hours).padStart(2, "0");
+        mEl.textContent = String(mins).padStart(2, "0");
+        sEl.textContent = String(secs).padStart(2, "0");
+      }
+
+      update();
+      setInterval(update, 1000);
+    })();
+  </script>
+</body>
+</html>
