@@ -6,23 +6,37 @@
   <title>رسالة من القلب ❤️</title>
   <style>
     :root{
-      --bg:#0f0b10; --card:#1a121c; --muted:#cbd5e1; --text:#fff; --accent:#ff5fa2; --accent2:#ffd1e6;
+      --bg:#0f0b10; --card:#1a121c; --muted:#cbd5e1; --text:#fff;
+      --accent:#ff5fa2; --accent2:#ffd1e6; --outline:#2c2430;
+      --good:#6ee7b7; --warn:#fca5a5; --gold:#ffd166;
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:"Tajawal",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
     a{color:inherit;text-decoration:none}
     .shell{max-width:900px;margin:auto;padding:20px}
-    .nav{position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;background:rgba(26,18,28,.8);backdrop-filter:blur(8px);border-radius:16px;padding:10px 12px;border:1px solid #2c2430}
+    .nav{position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;background:rgba(26,18,28,.8);backdrop-filter:blur(8px);border-radius:16px;padding:10px 12px;border:1px solid var(--outline)}
     .brand{font-weight:800;letter-spacing:.5px}
     .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-inline-start:auto}
-    .tab{padding:10px 14px;border-radius:12px;border:1px solid #2c2430;background:#120c13;cursor:pointer}
-    .tab.active{background:var(--accent);color:#12060a;border-color:transparent}
-    .card{background:var(--card);border:1px solid #2c2430;border-radius:18px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+
+    /* أزرار موحّدة وواضحة */
+    .tab, .btn{
+      padding:10px 14px;border-radius:12px;border:1px solid var(--outline);
+      background:#120c13;cursor:pointer;color:#fff;font-weight:800;letter-spacing:.2px;
+      text-shadow:0 1px 0 rgba(0,0,0,.5); transition:transform .15s, box-shadow .15s, background .2s;
+      box-shadow:0 4px 10px rgba(0,0,0,.25);
+      display:inline-flex;align-items:center;gap:8px;
+    }
+    .tab:hover,.btn:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(0,0,0,.35)}
+    .tab.active{background:var(--accent);color:#12060a;border-color:transparent;text-shadow:none}
+    .btn{background:linear-gradient(180deg, #ff7bb6, #ff5fa2); color:#12060a; border:none}
+    .btn.outline{background:#120c13;color:#fff;border:1px solid var(--outline)}
+    .btn.good{background:linear-gradient(180deg,#7ef0c4,#32d49b);color:#0a1210}
+    .btn.warn{background:linear-gradient(180deg,#ffc7c7,#ff9b9b);color:#2b0a0a}
+
+    .card{background:var(--card);border:1px solid var(--outline);border-radius:18px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
     .grid{display:grid;gap:14px}
     @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
     .muted{color:var(--muted)}
-    .btn{cursor:pointer;border:0;background:var(--accent);color:#12060a;font-weight:800;padding:12px 16px;border-radius:12px}
-    .btn.outline{background:#120c13;color:var(--text);border:1px solid #2c2430}
     .center{text-align:center}
     .hearts{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
     .heart{position:absolute;bottom:-40px;opacity:.85;animation:floatUp linear forwards}
@@ -31,34 +45,53 @@
     .page{display:none}
     .page.active{display:block}
     .title{font-size:28px;margin:6px 0 12px}
-    .kiss{filter:drop-shadow(0 8px 20px rgba(255,95,162,.35))}
     .footer{color:#9aa4b2;text-align:center;margin:28px 0}
     .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
-    .gallery img{width:100%;border-radius:14px;border:1px solid #2c2430}
-    .note{background:#120c13;border:1px dashed #2c2430;border-radius:12px;padding:12px;margin-top:10px}
+    .gallery img{width:100%;border-radius:14px;border:1px solid var(--outline)}
+
+    .note{background:#120c13;border:1px dashed var(--outline);border-radius:12px;padding:12px;margin-top:10px}
     .type{min-height:48px;white-space:pre-wrap}
-    .audioBar{display:flex;align-items:center;gap:10px;margin-top:8px}
-    .inp{width:100%;padding:12px;border-radius:12px;border:1px solid #2c2430;background:#120c13;color:var(--text);outline:none}
+    .audioBar{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+    .inp{width:100%;padding:12px;border-radius:12px;border:1px solid var(--outline);background:#120c13;color:var(--text);outline:none}
     .row{display:grid;gap:10px}
     @media(min-width:640px){.row{grid-template-columns:1fr 1fr}}
-    .chip{display:inline-flex;gap:6px;align-items:center;background:#120c13;border:1px solid #2c2430;border-radius:999px;padding:6px 10px}
-    /* زر العد التنازلي */
-    .btn-romantic{
-      display:inline-block;background:#ff6ba6;color:#14060c;padding:10px 14px;border-radius:12px;font-weight:700;text-decoration:none
+    .chip{display:inline-flex;gap:6px;align-items:center;background:#120c13;border:1px solid var(--outline);border-radius:999px;padding:6px 10px}
+
+    /* عدّ تنازلي داخل نفس الصفحة */
+    .count{display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:12px;margin:16px 0 6px}
+    .unit{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:16px 12px;text-align:center}
+    .num{font-size:clamp(28px,6vw,48px);font-weight:800;letter-spacing:1px}
+    .lab{font-size:12px;opacity:.9;margin-top:4px}
+    @media (max-width:520px){.count{grid-template-columns:repeat(2, minmax(0,1fr))}}
+
+    /* مؤثرات عيد الميلاد */
+    #bdayFx{position:fixed;inset:0;pointer-events:none;z-index:-1}
+    .cake{position:absolute;bottom:-40px;font-size:clamp(22px,4vw,34px);opacity:.9;animation:rise var(--dur) linear forwards;filter:drop-shadow(0 2px 8px rgba(0,0,0,.35))}
+    @keyframes rise{to{transform:translateY(-120vh) rotate(10deg);opacity:0}}
+
+    .candles{position:fixed;left:0;right:0;bottom:6px;height:80px;display:flex;justify-content:center;gap:18px;pointer-events:none;z-index:-1}
+    .candle{position:relative;width:10px;height:60px;background:linear-gradient(#ffd4e9,#ffb2d6);border-radius:6px;border:1px solid rgba(255,255,255,.2);box-shadow:0 2px 10px rgba(0,0,0,.35) inset, 0 4px 12px rgba(0,0,0,.2)}
+    .flame{position:absolute;top:-18px;left:50%;transform:translateX(-50%);width:14px;height:20px;background:radial-gradient(closest-side, #fff7a8 35%, #ffae00 60%, rgba(255,174,0,.0) 70%);border-radius:50% 50% 50% 50%;filter:drop-shadow(0 0 8px rgba(255,209,102,.9))}
+    .flame::after{content:"";position:absolute;inset:0;animation:flick .8s infinite alternate ease-in-out}
+    @keyframes flick{
+      0%{transform:translate(-1px,1px) scale(1)}
+      100%{transform:translate(2px,-1px) scale(1.08)}
     }
   </style>
 </head>
 <body>
   <div class="hearts" id="hearts"></div>
+  <div id="bdayFx" hidden></div>
+
   <div class="shell">
     <nav class="nav">
       <div class="brand">💗 رسالة من <span id="yourNameChip">محمود</span> إلى <span id="herNameChip">إيمان</span></div>
       <div class="tabs">
-        <button class="tab active" data-page="home">الصفحة الرئيسية</button>
-        <button class="tab" data-page="memories">ذكرياتنا</button>
-        <button class="tab" data-page="play">لعبة لطيفة</button>
-        <button class="tab" data-page="message">الرسالة</button>
-        <a href="countdown.html" class="btn-romantic">🎂 العدّ التنازلي لعيد ميلادك يا إيمان 💖</a>
+        <button class="tab active" data-page="home">🏠 الصفحة الرئيسية</button>
+        <button class="tab" data-page="memories">📸 ذكرياتنا</button>
+        <button class="tab" data-page="play">🎮 لعبة لطيفة</button>
+        <button class="tab" data-page="message">💌 الرسالة</button>
+        <button class="tab" data-page="birthday">🎂 عيد الميلاد</button>
       </div>
     </nav>
 
@@ -73,7 +106,7 @@
             <div>
               <label class="muted">اسمك (أنا بحبه منون 🥰😘🥰 ):</label>
               <input id="herNameInput" class="inp" placeholder=" بت قولتلك بحبه منون ها " />
-              <div class="note"> 🤣🤣كدا كدا انا الي برمجت الموقع وهخليه تلقائي يكتب الرسالة بإسم منون لو مكتبتيش اسم تاني : <b>إيمان</b> 💞</div>
+              <div class="note"> 🤣🤣 كدا كدا انا الي برمجت الموقع وهخليه تلقائي يكتب الرسالة بإسم منون لو مكتبتيش اسم تاني أحلي  : <b> منون </b> 💞</div>
             </div>
             <div>
               <label class="muted">اسمي عندِك يظهر إزاي؟</label>
@@ -82,20 +115,19 @@
           </div>
 
           <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn" id="saveNames">حفظ الأسماء</button>
-            <button class="btn outline" id="typeBtn">شوفي الرسالة التعريفية ✨</button>
+            <button class="btn good" id="saveNames">💾 حفظ الأسماء</button>
+            <button class="btn outline" id="typeBtn">✨ شوفي الرسالة التعريفية</button>
           </div>
 
           <div class="note type" id="typeArea"></div>
 
-          <!-- شريط موسيقى نظيف (تشغيل/إيقاف) -->
+          <!-- شريط موسيقى -->
           <div class="audioBar">
-            <button class="btn" id="playMusic">تشغيل الموسيقى 🎶</button>
-            <button class="btn outline" id="pauseMusic">إيقاف</button>
+            <button class="btn" id="playMusic">🎵 تشغيل الموسيقى</button>
+            <button class="btn outline" id="pauseMusic">⏸️ إيقاف</button>
             <span class="chip">موسيقى رومانسية خفيفة</span>
           </div>
           <audio id="bgAudio" preload="auto" playsinline loop>
-            <!-- عدّل المسار حسب مكان الملف: لو في مجلد music خليه كده -->
             <source src="music/our_song.mp3" type="audio/mpeg">
             متصفحك لا يدعم تشغيل الصوت 🎵
           </audio>
@@ -105,7 +137,7 @@
       <!-- الصفحة 2: ذكريات -->
       <div class="page" id="memories">
         <div class="card">
-          <h2 class="title">ذكرياتنا الحلوة</h2>
+          <h2 class="title">📸 ذكرياتنا الحلوة</h2>
           <div class="gallery" id="gallery">
             <img src="images/1000036687.jpg" alt="أنا وإيمان 💕">
             <img src="images/1000036697.jpg" alt="ذكريات جميلة ❤️">
@@ -118,11 +150,11 @@
       <!-- الصفحة 3: لعبة لطيفة -->
       <div class="page" id="play">
         <div class="card center">
-          <h2 class="title">سؤال واحد بس 😌</h2>
+          <h2 class="title">🎮 سؤال واحد بس 😌</h2>
           <p class="muted">هل لسه بتحبيني؟</p>
           <div style="margin-top:10px; position:relative; height:120px">
-            <button class="btn" id="yesBtn">أكيد بحبك 💘</button>
-            <button class="btn outline" id="noBtn" style="position:absolute; margin-inline-start:12px">لا 🙈</button>
+            <button class="btn good" id="yesBtn">❤️ أكيد بحبك</button>
+            <button class="btn warn" id="noBtn" style="position:absolute; margin-inline-start:12px">🙈 لا</button>
           </div>
           <div id="playOut" class="note"></div>
         </div>
@@ -131,21 +163,38 @@
       <!-- الصفحة 4: الرسالة -->
       <div class="page" id="message">
         <div class="card">
-          <h2 class="title">من قلبي ليكي</h2>
+          <h2 class="title">💌 من قلبي ليكي</h2>
           <p id="finalMsg" class="muted" style="line-height:1.9"></p>
           <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn" id="copyBtn">نسخ الرسالة</button>
-            <button class="btn outline" id="shareBtn">مشاركة</button>
+            <button class="btn" id="copyBtn">📋 نسخ الرسالة</button>
+            <button class="btn outline" id="shareBtn">🔗 مشاركة</button>
           </div>
+        </div>
+      </div>
+
+      <!-- الصفحة 5: عيد الميلاد (العدّ التنازلي داخل الصفحة) -->
+      <div class="page" id="birthday">
+        <div class="card center">
+          <h2 class="title">🎂 العدّ التنازلي لعيد ميلاد <span id="herNameInBday">إيمان</span></h2>
+          <p class="muted">بنستنى اليوم ده على نار 🕯️💖</p>
+
+          <div class="count" aria-live="polite">
+            <div class="unit"><div class="num" id="d">—</div><div class="lab">أيام</div></div>
+            <div class="unit"><div class="num" id="h">—</div><div class="lab">ساعات</div></div>
+            <div class="unit"><div class="num" id="m">—</div><div class="lab">دقايق</div></div>
+            <div class="unit"><div class="num" id="s">—</div><div class="lab">ثواني</div></div>
+          </div>
+
+          <div class="note">العَدّ تلقائي لأقرب <b>17 يونيو</b> — أول ما يوصل للصفر هتشتغل المفاجأة 🎉</div>
         </div>
       </div>
     </section>
 
-    <div class="footer">صُنع بحُب – <span id="footerNames">محمود ❤ إيمان</span></div>
+    <div class="footer">صُنع بحُب – <span id="footerNames">محمود ❤ منون</span></div>
   </div>
 
   <script>
-    // إعداد أسماء افتراضية
+    // ===== أسماء افتراضية حسب كلامك =====
     let herName = 'منون';
     let yourName = 'محمود';
 
@@ -153,30 +202,32 @@
     const yourNameInput = document.getElementById('yourNameInput');
     const herNameTitle = document.getElementById('herNameTitle');
     const yourNameChip = document.getElementById('yourNameChip');
-    const herNameChip = document.getElementById('herNameChip');
-    const footerNames = document.getElementById('footerNames');
+    const herNameChip  = document.getElementById('herNameChip');
+    const footerNames  = document.getElementById('footerNames');
+    const herNameInBday= document.getElementById('herNameInBday');
 
     document.getElementById('saveNames').addEventListener('click', () => {
       const h = (herNameInput.value || '').trim();
       const y = (yourNameInput.value || '').trim();
       herName = h || 'منون';
       yourName = y || 'محمود';
-      herNameTitle.textContent = herName;
+      [herNameTitle, herNameChip, herNameInBday].forEach(el=> el.textContent = herName);
       yourNameChip.textContent = yourName;
-      herNameChip.textContent = herName;
       footerNames.textContent = `${yourName} ❤ ${herName}`;
     });
 
-    // تبديل الصفحات
-    const tabs = document.querySelectorAll('.tab');
+    // ===== تبديل الصفحات مع تفعيل/تعطيل مؤثرات عيد الميلاد =====
+    const tabs  = document.querySelectorAll('.tab');
     const pages = document.querySelectorAll('.page');
     tabs.forEach(t => t.addEventListener('click', () => {
       tabs.forEach(b=>b.classList.remove('active')); t.classList.add('active');
       const id = t.dataset.page;
       pages.forEach(p => p.classList.toggle('active', p.id === id));
+      if(id === 'birthday'){ startBirthdayFX(); startCountdown(); }
+      else { stopBirthdayFX(); }
     }));
 
-    // كتابة تدريجية (typewriter)
+    // ===== كتابة تدريجية =====
     const typeBtn = document.getElementById('typeBtn');
     const typeArea = document.getElementById('typeArea');
     typeBtn.addEventListener('click', () => {
@@ -185,23 +236,18 @@
       let i=0; const timer=setInterval(()=>{typeArea.textContent += txt[i]||''; i++; if(i>txt.length) clearInterval(timer);}, 28);
     });
 
-    // موسيقى (تشغيل/إيقاف) — تنفيذ واحد فقط
-    const audio = document.getElementById('bgAudio');
+    // ===== موسيقى تشغيل/إيقاف =====
+    const audio   = document.getElementById('bgAudio');
     const playBtn = document.getElementById('playMusic');
-    const pauseBtn = document.getElementById('pauseMusic');
+    const pauseBtn= document.getElementById('pauseMusic');
     audio.volume = 1.0;
-
-    playBtn.addEventListener('click', async () => {
-      try { await audio.play(); }
-      catch(e){ alert('مش قادر يشغّل الصوت. اتأكد من مسار الملف: music/our_song.mp3'); }
-    });
+    playBtn.addEventListener('click', async () => { try{ await audio.play(); }catch(e){ alert('اتأكد من مسار الملف: music/our_song.mp3'); }});
     pauseBtn.addEventListener('click', () => audio.pause());
 
-    // لعبة لطيفة: زر "لا" يزوغ
+    // ===== لعبة لطيفة =====
     const yesBtn = document.getElementById('yesBtn');
     const noBtn  = document.getElementById('noBtn');
     const playOut= document.getElementById('playOut');
-
     noBtn.addEventListener('mouseenter', () => {
       const area = noBtn.parentElement.getBoundingClientRect();
       const x = Math.random() * (area.width - noBtn.offsetWidth);
@@ -210,14 +256,13 @@
     });
     yesBtn.addEventListener('click', ()=>{ playOut.textContent = `تمام يا ${herName}، الجواب معروف من غير ما تسألي 💘`; });
 
-    // رسالة نهائية
+    // ===== رسالة نهائية =====
     const finalMsg = document.getElementById('finalMsg');
     function renderFinal(){
       finalMsg.textContent = `${herName} العزيزة،\n\nأعرف إن الأيام اللي فاتت كانت تقيلة، ويمكن الكلام اتلخبط مننا،\nبس أنا حابب أبدأ من جديد، خطوة بخطوة، بإيد في إيد.\nلو في قلبك مساحة لفرصة تانية، أنا مستعد أصنعها أحلى فرصة.\n\nمخلص دائمًا،\n${yourName}`;
     }
     renderFinal();
 
-    // نسخ ومشاركة
     document.getElementById('copyBtn').addEventListener('click', async()=>{
       try{await navigator.clipboard.writeText(finalMsg.textContent); alert('تم نسخ الرسالة 💌');}
       catch{alert('المتصفح مانع النسخ تلقائيًا – انسخها يدويًا لو سمحت.');}
@@ -228,15 +273,14 @@
       else{ alert('المشاركة غير مدعومة — انسخ الرسالة وابعتها 💌'); }
     });
 
-    // قلوب متطايرة
+    // ===== قلوب عامة (خلفية) =====
     const hearts = document.getElementById('hearts');
     function spawnHeart(){
       const d = document.createElement('div');
       d.className='heart';
       const size = 12 + Math.random()*24;
       d.style.left = Math.random()*100+'%';
-      d.style.width = size+'px';
-      d.style.height = size+'px';
+      d.style.width = size+'px'; d.style.height = size+'px';
       d.style.animationDuration = 5 + Math.random()*6 + 's';
       d.style.color = 'var(--accent)';
       d.innerHTML = '❤';
@@ -245,13 +289,98 @@
     }
     setInterval(spawnHeart, 600);
 
+    // ===== عدّ تنازلي داخل الصفحة + مؤثرات عيد الميلاد =====
+    const TARGET_MM = 6, TARGET_DD = 17; // يونيو = 6
+    let countdownTimer = null;
+    function nextTarget(){
+      const now = new Date();
+      let y = now.getFullYear();
+      let t = new Date(y, TARGET_MM-1, TARGET_DD, 0,0,0,0);
+      if (t <= now) t = new Date(y+1, TARGET_MM-1, TARGET_DD, 0,0,0,0);
+      return t;
+    }
+    function startCountdown(){
+      const dEl = document.getElementById('d');
+      const hEl = document.getElementById('h');
+      const mEl = document.getElementById('m');
+      const sEl = document.getElementById('s');
+      const target = nextTarget();
+
+      function tick(){
+        const now = new Date();
+        let diff = target - now;
+        if (diff <= 0){
+          dEl.textContent = hEl.textContent = mEl.textContent = sEl.textContent = '0';
+          celebrateBirthday(); // مفاجأة عند الوصول للصفر
+          clearInterval(countdownTimer);
+          return;
+        }
+        const totalSec = Math.floor(diff/1000);
+        const days  = Math.floor(totalSec/86400);
+        const hours = Math.floor((totalSec%86400)/3600);
+        const mins  = Math.floor((totalSec%3600)/60);
+        const secs  = totalSec%60;
+        dEl.textContent = days;
+        hEl.textContent = String(hours).padStart(2,'0');
+        mEl.textContent = String(mins).padStart(2,'0');
+        sEl.textContent = String(secs).padStart(2,'0');
+      }
+      if(countdownTimer) clearInterval(countdownTimer);
+      tick(); countdownTimer = setInterval(tick, 1000);
+    }
+
+    // مؤثرات: تورتة تطير + شموع قاع الصفحة عند دخول تبويب عيد الميلاد
+    const fxHost = document.getElementById('bdayFx');
+    let cakeTimer = null;
+    function startBirthdayFX(){
+      fxHost.hidden = false;
+      // شموع
+      const candles = document.createElement('div');
+      candles.className = 'candles';
+      for(let i=0;i<12;i++){
+        const c = document.createElement('div'); c.className='candle';
+        const f = document.createElement('div'); f.className='flame';
+        c.appendChild(f); candles.appendChild(c);
+      }
+      fxHost.appendChild(candles);
+      // تورتة تطير
+      function spawnCake(){
+        const e = document.createElement('div');
+        e.className = 'cake';
+        e.style.left = (5 + Math.random()*90) + 'vw';
+        e.style.setProperty('--dur', (6+Math.random()*8)+'s');
+        e.textContent = '🎂';
+        fxHost.appendChild(e);
+        setTimeout(()=>e.remove(), 15000);
+      }
+      for(let i=0;i<6;i++) spawnCake();
+      cakeTimer = setInterval(spawnCake, 900);
+    }
+    function stopBirthdayFX(){
+      fxHost.hidden = true;
+      if(cakeTimer) { clearInterval(cakeTimer); cakeTimer = null; }
+      while(fxHost.firstChild) fxHost.removeChild(fxHost.firstChild);
+    }
+
+    // مفاجأة بسيطة عند الوصول للصفر (وميض ذهبي)
+    function celebrateBirthday(){
+      const flash = document.createElement('div');
+      flash.style.position='fixed'; flash.style.inset='0';
+      flash.style.background='radial-gradient(circle at 50% 50%, rgba(255,209,102,.7), rgba(255,209,102,0))';
+      flash.style.pointerEvents='none'; flash.style.animation='fade 1.2s ease-out forwards';
+      flash.style.zIndex='2';
+      document.body.appendChild(flash);
+      const style = document.createElement('style');
+      style.textContent='@keyframes fade{from{opacity:1}to{opacity:0}}';
+      document.head.appendChild(style);
+      setTimeout(()=>flash.remove(), 1400);
+    }
+
     // فحوصات بسيطة
     console.groupCollapsed('Self-tests');
     try {
       console.assert(typeof herName === 'string', 'herName should be string');
-      console.assert(document.getElementById('hearts') === hearts, 'hearts reference OK');
-      console.assert(typeof spawnHeart === 'function', 'spawnHeart is defined');
-      console.log('✅ Music wired once, IDs unique, ready.');
+      console.log('✅ Ready. Countdown in-page. Music persists. Buttons unified.');
     } catch (e) { console.warn('Self-test issue:', e); }
     console.groupEnd();
   </script>
