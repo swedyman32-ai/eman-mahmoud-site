@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>عدّ تنازلي لعيد ميلاد إيمان 🎂💖</title>
+  <style>
+    :root{--bg:#0b0f16;--fg:#fff;--accent:#ff6ba6;--soft:#ffd2e4}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Tahoma,Arial;
+      background:radial-gradient(1200px 600px at 50% 20%, #121826 0%, #0b0f16 60%, #070b11 100%);
+      color:var(--fg);min-height:100dvh;display:flex;align-items:center;justify-content:center}
+    .wrap{max-width:900px;width:100%;padding:24px}
+    .card{background:rgba(255,255,255,0.06);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.08);
+      border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:28px}
+    h1{margin:0 0 6px;font-size:clamp(24px,4vw,40px);line-height:1.2}
+    p.lead{margin:6px 0 18px;color:#dfe6f9;opacity:.9}
+    .count{display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:12px;margin:16px 0 6px}
+    .unit{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:16px 12px;text-align:center}
+    .num{font-size:clamp(28px,6vw,48px);font-weight:700;letter-spacing:1px}
+    .lab{font-size:12px;opacity:.85;margin-top:4px}
+    .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+    .btn{appearance:none;border:0;border-radius:14px;padding:12px 16px;font-weight:700;cursor:pointer}
+    .btn-primary{background:var(--accent);color:#14060c}
+    .btn-ghost{background:transparent;color:var(--soft);border:1px solid rgba(255,255,255,.18)}
+    /* قلوب */
+    .hearts{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:-1}
+    .heart{position:absolute;width:14px;height:14px;background:var(--accent);transform:rotate(45deg);
+      animation: float var(--dur) linear infinite;opacity:.65;filter:drop-shadow(0 0 6px rgba(255,107,166,.4))}
+    .heart::before,.heart::after{content:"";position:absolute;width:14px;height:14px;background:var(--accent);border-radius:50%}
+    .heart::before{left:-7px;top:0}.heart::after{top:-7px;left:0}
+    @keyframes float{0%{transform:translateY(110vh) rotate(45deg);opacity:0}10%{opacity:.7}100%{transform:translateY(-10vh) rotate(45deg);opacity:0}}
+    /* confetti */
+    canvas{position:fixed;inset:0;pointer-events:none}
+    footer{margin-top:16px;font-size:12px;opacity:.7}
+    @media (max-width:520px){.count{grid-template-columns:repeat(2, minmax(0,1fr))}}
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <main class="wrap">
+    <section class="card">
+      <h1>العدّ التنازلي لعيد ميلاد إيمان 🎂</h1>
+      <p class="lead">كل سنة وإنتِ أجمل حاجة في الدنيا يا إيمان 💖</p>
+
+      <div class="count" aria-live="polite">
+        <div class="unit"><div class="num" id="d">—</div><div class="lab">أيام</div></div>
+        <div class="unit"><div class="num" id="h">—</div><div class="lab">ساعات</div></div>
+        <div class="unit"><div class="num" id="m">—</div><div class="lab">دقايق</div></div>
+        <div class="unit"><div class="num" id="s">—</div><div class="lab">ثواني</div></div>
+      </div>
+
+      <div class="row">
+        <button class="btn btn-primary" id="share">شارك الصفحة</button>
+        <button class="btn btn-ghost" id="edit">تعديل التاريخ</button>
+      </div>
+
+      <footer>تقدر تغيّر التاريخ من اللينك: ?date=YYYY-MM-DD (افتراضيًا: 17 يونيو)</footer>
+    </section>
+  </main>
+
+  <script>
+    // ========== التاريخ الافتراضي: 17 يونيو ==========
+    const BDAY_MM_DD = "06-17";
+
+    function nextBirthdayFrom(mmdd){
+      const [mm,dd] = mmdd.split("-").map(Number);
+      const now = new Date();
+      const y = now.getFullYear();
+      const c = new Date(y, mm-1, dd, 0,0,0);
+      return c >= now ? c : new Date(y+1, mm-1, dd, 0,0,0);
+    }
+
+    // تسمح بتمرير ?date=YYYY-MM-DD لو حبيت
+    const params = new URLSearchParams(location.search);
+    let target = null;
+    if (params.get("date")) {
+      const d = new Date(params.get("date")+"T00:00:00");
+      if (!isNaN(d)) target = d;
+    }
+    if (!target) target = nextBirthdayFrom(BDAY_MM_DD);
+
+    // ========== العدّ ==========
+    const el = { d:$("#d"), h:$("#h"), m:$("#m"), s:$("#s") };
+    let done = false;
+    function $(id){ return document.getElementById(id); }
+
+    function tick(){
+      const now = new Date();
+      const diff = target - now;
+      if (diff <= 0 && !done){
+        done = true;
+        ["d","h","m","s"].forEach(k=>el[k].textContent="0");
+        celebrate();
+        clearInterval(timer);
+        return;
+      }
+      const sec = Math.floor(diff/1000)%60;
+      const min = Math.floor(diff/1000/60)%60;
+      const hr  = Math.floor(diff/1000/60/60)%24;
+      const day = Math.floor(diff/1000/60/60/24);
+      el.d.textContent = day;
+      el.h.textContent = String(hr).padStart(2,"0");
+      el.m.textContent = String(min).padStart(2,"0");
+      el.s.textContent = String(sec).padStart(2,"0");
+    }
+    const timer = setInterval(tick, 1000); tick();
+
+    // ========== قلوب ==========
+    const hearts = document.getElementById("hearts");
+    for (let i=0;i<28;i++){
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.style.left = Math.random()*100 + "vw";
+      h.style.animationDelay = (-Math.random()*8)+"s";
+      h.style.setProperty("--dur", (6+Math.random()*8)+"s");
+      h.style.opacity = 0.35 + Math.random()*0.4;
+      hearts.appendChild(h);
+    }
+
+    // ========== مشاركة/تعديل ==========
+    document.getElementById("share").onclick = async () => {
+      const url = new URL(location.href);
+      url.searchParams.set("date", target.toISOString().slice(0,10));
+      try{
+        await navigator.clipboard.writeText(url.toString());
+        alert("تم نسخ رابط العدّ ✅\n\n" + url.toString());
+      }catch{ alert("انسخ الرابط يدويًا:\n"+url.toString()); }
+    };
+    document.getElementById("edit").onclick = () => {
+      const v = prompt("التاريخ بصيغة YYYY-MM-DD", target.toISOString().slice(0,10));
+      if(!v) return;
+      const d = new Date(v+"T00:00:00");
+      if(isNaN(d)) return alert("صيغة غير صحيحة");
+      location.search = "?date="+v;
+    };
+
+    // ========== كونفِتي عند الوصول للصفر ==========
+    function celebrate(){
+      const canvas = document.getElementById("confetti");
+      const ctx = canvas.getContext("2d");
+      const pieces = [];
+      function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+      addEventListener("resize", resize); resize();
+      for(let i=0;i<180;i++){
+        pieces.push({
+          x: Math.random()*canvas.width,
+          y: Math.random()*-canvas.height,
+          r: 6+Math.random()*8,
+          vy: 2+Math.random()*3,
+          vx: (Math.random()-.5)*2,
+          rot: Math.random()*Math.PI, vr:(Math.random()-.5)*0.2,
+        });
+      }
+      const colors = ["#ff6ba6","#ffd166","#6ee7b7","#93c5fd","#fca5a5"];
+      let t=0, stopAt=420;
+      (function frame(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        pieces.forEach((p,i)=>{
+          p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+          if (p.y > canvas.height+20) p.y = -20;
+          ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+          ctx.fillStyle = colors[i%colors.length]; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r);
+          ctx.restore();
+        });
+        t++; if (t<stopAt) requestAnimationFrame(frame);
+      })();
+    }
+  </script>
+</body>
+</html>
